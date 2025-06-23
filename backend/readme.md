@@ -1,0 +1,2 @@
+# ALL FUNCTIONALITY MOVED TO REST API
+# sdk not working
