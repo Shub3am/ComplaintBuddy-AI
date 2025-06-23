@@ -112,7 +112,7 @@ export default function Main({}) {
           </div>
           <div className="flex items-center gap-3">
             <Link
-              href="/mvp"
+              href="/complaints"
               className="px-4 py-2 text-gray-700 hover:text-gray-900 transition-colors">
               Go to App
             </Link>
