@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Plus,
   Phone,
@@ -33,12 +33,12 @@ interface Complaint {
 
 // Dashboard Component
 function Dashboard({ complaints, onNewComplaint, onViewAll }) {
-  const stats = {
-    total: complaints.length,
-    pending: complaints.filter((c) => c.status === "pending").length,
-    inProgress: complaints.filter((c) => c.status === "in-progress").length,
-    resolved: complaints.filter((c) => c.status === "resolved").length,
-  };
+  // const stats = {
+  //   total: complaints.length,
+  //   pending: complaints.filter((c) => c.status === "pending").length,
+  //   inProgress: complaints.filter((c) => c.status === "in-progress").length,
+  //   resolved: complaints.filter((c) => c.status === "resolved").length,
+  // };
 
   return (
     <div className="space-y-6 bg-white text-black">
@@ -60,7 +60,7 @@ function Dashboard({ complaints, onNewComplaint, onViewAll }) {
       </div>
 
       {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+      {/* <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
         <div className="bg-white rounded-lg shadow p-6">
           <div className="flex items-center justify-between">
             <div>
@@ -103,7 +103,7 @@ function Dashboard({ complaints, onNewComplaint, onViewAll }) {
             <CheckCircle className="h-8 w-8 text-green-400" />
           </div>
         </div>
-      </div>
+      </div> */}
 
       {/* Recent Complaints */}
       <div className="bg-white rounded-lg shadow text-black">
@@ -137,7 +137,7 @@ function Dashboard({ complaints, onNewComplaint, onViewAll }) {
                         {complaint.status === "resolved" && (
                           <CheckCircle className="h-5 w-5 text-green-600" />
                         )}
-                        {complaint.status === "in-progress" && (
+                        {complaint.status === "progress" && (
                           <Clock className="h-5 w-5 text-blue-600" />
                         )}
                         {complaint.status === "pending" && (
@@ -145,9 +145,13 @@ function Dashboard({ complaints, onNewComplaint, onViewAll }) {
                         )}
                       </div>
                       <div>
-                        <h4 className="font-medium">{complaint.title}</h4>
+                        <h4 className="font-medium">{complaint.issue_title}</h4>
                         <p className="text-sm text-gray-600">
-                          {complaint.company} • {complaint.product}
+                          Company: {complaint.company_name}
+                        </p>
+                        <p className="text-sm text-gray-600">
+                          Product:{""}
+                          {complaint.product}
                         </p>
                       </div>
                     </div>
@@ -160,11 +164,11 @@ function Dashboard({ complaints, onNewComplaint, onViewAll }) {
                             ? "bg-blue-100 text-blue-800"
                             : "bg-yellow-100 text-yellow-800"
                         }`}>
-                        {complaint.status.replace("-", " ")}
+                        {complaint.progress.replace("-", " ")}
                       </span>
                       {complaint.aiCallStatus && (
                         <span className="px-2 py-1 text-xs bg-purple-100 text-purple-800 rounded-full">
-                          AI: {complaint.aiCallStatus}
+                          AI: {complaint.progress}
                         </span>
                       )}
                     </div>
@@ -377,10 +381,10 @@ function ComplaintList({ complaints, onBack }) {
 
   const filteredComplaints = complaints.filter((complaint) => {
     const matchesSearch =
-      complaint.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      complaint.company.toLowerCase().includes(searchTerm.toLowerCase());
+      complaint.issue_title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      complaint.company_name.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesStatus =
-      statusFilter === "all" || complaint.status === statusFilter;
+      statusFilter === "all" || complaint.progress === statusFilter;
     return matchesSearch && matchesStatus;
   });
 
@@ -459,7 +463,9 @@ function ComplaintList({ complaints, onBack }) {
                     {complaint.status === "pending" && (
                       <AlertCircle className="h-5 w-5 text-yellow-600" />
                     )}
-                    <h3 className="text-lg font-semibold">{complaint.title}</h3>
+                    <h3 className="text-lg font-semibold">
+                      {complaint.issue_title}
+                    </h3>
                     <span
                       className={`px-2 py-1 text-xs font-medium rounded-full ${
                         complaint.status === "resolved"
@@ -468,14 +474,14 @@ function ComplaintList({ complaints, onBack }) {
                           ? "bg-blue-100 text-blue-800"
                           : "bg-yellow-100 text-yellow-800"
                       }`}>
-                      {complaint.status.replace("-", " ")}
+                      {complaint.progress.replace("-", " ")}
                     </span>
                   </div>
 
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-3 text-sm text-gray-600">
                     <div className="flex items-center gap-2">
                       <Building className="h-4 w-4" />
-                      <span>{complaint.company}</span>
+                      <span>{complaint.company_name}</span>
                     </div>
                     <div className="flex items-center gap-2">
                       <Package className="h-4 w-4" />
@@ -483,17 +489,17 @@ function ComplaintList({ complaints, onBack }) {
                     </div>
                     <div className="flex items-center gap-2">
                       <Calendar className="h-4 w-4" />
-                      <span>{complaint.createdAt}</span>
+                      <span>{complaint.order_number}</span>
                     </div>
                   </div>
 
                   <p className="text-gray-700 mb-3">{complaint.description}</p>
 
-                  {complaint.aiCallStatus && (
+                  {complaint.progress && (
                     <div className="flex items-center gap-2">
                       <Bot className="h-4 w-4 text-purple-600" />
                       <span className="px-2 py-1 text-xs bg-purple-100 text-purple-800 rounded-full">
-                        AI Status: {complaint.aiCallStatus}
+                        AI Status: {complaint.progress}
                       </span>
                     </div>
                   )}
@@ -509,37 +515,19 @@ function ComplaintList({ complaints, onBack }) {
 
 // Main App Component
 export default function App() {
+  const [complains, setComplains] = useState([]);
   const [currentView, setCurrentView] = useState("dashboard");
-  const [complaints, setComplaints] = useState([
-    {
-      id: "1",
-      title: "Defective Phone Screen",
-      company: "TechCorp",
-      product: "Smartphone X1",
-      description:
-        "The phone screen started flickering after 2 weeks of purchase. Need replacement or refund.",
-      status: "in-progress",
-      priority: "high",
-      createdAt: "2024-01-15",
-      phoneNumber: "+91 9876543210",
-      email: "user@example.com",
-      aiCallStatus: "calling",
-    },
-    {
-      id: "2",
-      title: "Wrong Order Delivered",
-      company: "FoodieApp",
-      product: "Food Delivery",
-      description:
-        "Ordered vegetarian meal but received non-vegetarian food. Need refund.",
-      status: "resolved",
-      priority: "medium",
-      createdAt: "2024-01-10",
-      phoneNumber: "+91 9876543210",
-      email: "user@example.com",
-      aiCallStatus: "completed",
-    },
-  ]);
+
+  useEffect(() => {
+    (async () => {
+      let getComplains = await fetch(`/api/complaints`).then((res) =>
+        res.json()
+      );
+
+      setComplains(getComplains);
+    })();
+  }, []);
+  console.log(complains);
 
   const handleCreateComplaint = (formData) => {
     const newComplaint = {
@@ -558,7 +546,7 @@ export default function App() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {currentView === "dashboard" && (
           <Dashboard
-            complaints={complaints}
+            complaints={complains}
             onNewComplaint={() => setCurrentView("create")}
             onViewAll={() => setCurrentView("list")}
           />
@@ -573,7 +561,7 @@ export default function App() {
 
         {currentView === "list" && (
           <ComplaintList
-            complaints={complaints}
+            complaints={complains}
             onBack={() => setCurrentView("dashboard")}
           />
         )}

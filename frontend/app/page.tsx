@@ -104,7 +104,7 @@ export default function Main({}) {
               <Bot className="h-6 w-6 text-blue-600" />
             </div>
             <div>
-              <h1 className="font-bold text-xl">AI Complaint Helper</h1>
+              <h1 className="font-bold text-xl">ComplainBuddy AI</h1>
               <p className="text-sm text-gray-600">
                 Let AI solve your problems
               </p>
