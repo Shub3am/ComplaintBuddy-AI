@@ -21,7 +21,7 @@ import {
   ExternalLink,
 } from "lucide-react";
 import Link from "next/link";
-import { useSearchParams } from "next/navigation";
+import { redirect, useSearchParams } from "next/navigation";
 
 // Test data for the complaint
 const complaintData = {
@@ -257,32 +257,32 @@ export default function ComplaintCardPage({ searchParams }) {
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
                           <label className="block text-sm font-medium text-gray-700 mb-1">
-                            Category
+                            Company Phone
                           </label>
-                          <p className="text-gray-900">{complain.category}</p>
+                          <p className="text-gray-900">
+                            {complain.company_phone}
+                          </p>
                         </div>
                         <div>
                           <label className="block text-sm font-medium text-gray-700 mb-1">
                             Order Number
                           </label>
                           <p className="text-gray-900">
-                            {complaintData.order_number}
+                            {complain.order_number}
                           </p>
                         </div>
                         <div>
                           <label className="block text-sm font-medium text-gray-700 mb-1">
                             Purchase Date
                           </label>
-                          <p className="text-gray-900">
-                            {complaintData.purchaseDate}
-                          </p>
+                          <p className="text-gray-900">{complain.created_at}</p>
                         </div>
                         <div>
                           <label className="block text-sm font-medium text-gray-700 mb-1">
-                            Refund Amount
+                            Purchase Amount
                           </label>
                           <p className="text-gray-900 font-semibold">
-                            {complaintData.refundAmount}
+                            {complain.purchase_amount}
                           </p>
                         </div>
                       </div>
@@ -377,23 +377,21 @@ export default function ComplaintCardPage({ searchParams }) {
                   <div className="flex items-center gap-3">
                     <User className="h-4 w-4 text-gray-400" />
                     <div>
-                      <p className="font-medium">
-                        {complaintData.customerName}
-                      </p>
+                      <p className="font-medium">{complain.customer_name}</p>
                       <p className="text-sm text-gray-600">Customer</p>
                     </div>
                   </div>
                   <div className="flex items-center gap-3">
                     <Phone className="h-4 w-4 text-gray-400" />
                     <div>
-                      <p className="font-medium">{complaintData.phoneNumber}</p>
+                      <p className="font-medium">{complain.customer_phone}</p>
                       <p className="text-sm text-gray-600">Phone</p>
                     </div>
                   </div>
                   <div className="flex items-center gap-3">
                     <Mail className="h-4 w-4 text-gray-400" />
                     <div>
-                      <p className="font-medium">{complaintData.email}</p>
+                      <p className="font-medium">{complain.customer_email}</p>
                       <p className="text-sm text-gray-600">Email</p>
                     </div>
                   </div>
@@ -430,7 +428,19 @@ export default function ComplaintCardPage({ searchParams }) {
               <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
                 <h3 className="text-lg font-semibold mb-4">Quick Actions</h3>
                 <div className="space-y-2">
-                  <button className="w-full flex items-center gap-2 px-3 py-2 text-left hover:bg-red-50 rounded-md text-red-600">
+                  <button
+                    onClick={async () => {
+                      let deleteComplain = await fetch(
+                        `/api/complaints/${complain.id}`,
+                        {
+                          method: "DELETE",
+                        }
+                      ).then((res) => res.json());
+                      if (deleteComplain) {
+                        redirect("/complaints");
+                      }
+                    }}
+                    className="w-full flex items-center gap-2 px-3 py-2 text-left hover:bg-red-50 rounded-md text-red-600">
                     <Trash2 className="h-4 w-4" />
                     <span>Delete Complaint</span>
                   </button>
