@@ -15,6 +15,8 @@ import {
   Filter,
 } from "lucide-react";
 import Link from "next/link";
+import { redirect } from "next/navigation";
+import { useRouter } from "next/navigation";
 
 // Types
 interface Complaint {
@@ -217,21 +219,34 @@ function CreateComplaint({ onSubmit, onCancel }) {
     company: "",
     product: "",
     description: "",
-    priority: "medium",
-    phoneNumber: "",
-    email: "",
+    progress: "",
+    orderNumber: "",
+    companyPhone: "",
+    customerEmail: "",
+    customerPhone: "",
+    customerName: "",
+    purchaseAmount: "",
   });
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (
       formData.title &&
       formData.company &&
       formData.product &&
       formData.description &&
-      formData.phoneNumber &&
-      formData.email
+      formData.companyPhone &&
+      formData.companyPhone
     ) {
-      onSubmit(formData);
+      // onSubmit(formData);
+      let addToDB = await fetch(`/api/complaints`, {
+        method: "POST",
+        body: JSON.stringify({ complain: formData }),
+      }).then((res) => res.json());
+      console.log(addToDB);
+      if (addToDB.error == null) {
+        alert("Complaint Registered, We Will Handle it from now on!");
+        onCancel();
+      }
     } else {
       alert("Please fill in all required fields");
     }
@@ -242,7 +257,7 @@ function CreateComplaint({ onSubmit, onCancel }) {
   };
 
   return (
-    <div className="space-y-6 bg-white text-black">
+    <div className="space-y-6 bg-white text-black p-4">
       <div className="flex items-center gap-4">
         <button
           onClick={onCancel}
@@ -258,11 +273,11 @@ function CreateComplaint({ onSubmit, onCancel }) {
         </div>
       </div>
 
-      <div className="max-w-2xl">
+      <div className="w-5/6 p-4">
         <div className="bg-white rounded-lg shadow p-6 space-y-6">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
-              Complaint Title *
+              Complaint Issue
             </label>
             <input
               type="text"
@@ -300,27 +315,32 @@ function CreateComplaint({ onSubmit, onCancel }) {
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                 placeholder="Product or service"
               />
-            </div>
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Priority Level
-            </label>
-            <div className="flex space-x-4">
-              {["low", "medium", "high"].map((priority) => (
-                <label key={priority} className="flex items-center">
-                  <input
-                    type="radio"
-                    name="priority"
-                    value={priority}
-                    checked={formData.priority === priority}
-                    onChange={(e) => handleChange("priority", e.target.value)}
-                    className="mr-2"
-                  />
-                  <span className="capitalize">{priority}</span>
-                </label>
-              ))}
+            </div>{" "}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Purchase Amount
+              </label>
+              <input
+                type="text"
+                required
+                value={formData.purchaseAmount}
+                onChange={(e) => handleChange("purchaseAmount", e.target.value)}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                placeholder="Product or service"
+              />
+            </div>{" "}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Order Number{" "}
+              </label>
+              <input
+                type="text"
+                required
+                value={formData.orderNumber}
+                onChange={(e) => handleChange("orderNumber", e.target.value)}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                placeholder="Product or service"
+              />
             </div>
           </div>
 
@@ -338,20 +358,63 @@ function CreateComplaint({ onSubmit, onCancel }) {
             />
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 py-4">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                Phone Number *
+                Company Phone Number ( With Country Code)
               </label>
               <input
-                type="tel"
+                type="text"
                 required
-                value={formData.phoneNumber}
-                onChange={(e) => handleChange("phoneNumber", e.target.value)}
+                value={formData.companyPhone}
+                onChange={(e) => handleChange("companyPhone", e.target.value)}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                 placeholder="+91 9876543210"
               />
             </div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Customer Name
+              </label>
+              <input
+                type="text"
+                required
+                value={formData.customerName}
+                onChange={(e) => handleChange("customerName", e.target.value)}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                placeholder="Shubham"
+              />
+            </div>{" "}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Customer Email
+              </label>
+              <input
+                type="text"
+                required
+                value={formData.customerEmail}
+                onChange={(e) => handleChange("customerEmail", e.target.value)}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                placeholder="acme@corp.com"
+              />
+            </div>{" "}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Customer Phone ( With Country Code)
+              </label>
+              <input
+                type="text"
+                required
+                value={formData.customerPhone}
+                onChange={(e) => handleChange("customerPhone", e.target.value)}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                placeholder="
+                +917007937707"
+              />
+            </div>{" "}
           </div>
 
           <div className="flex justify-end space-x-4">
@@ -540,7 +603,7 @@ export default function App() {
     setComplaints((prev) => [newComplaint, ...prev]);
     setCurrentView("dashboard");
   };
-
+  let router = useRouter();
   return (
     <div className="min-h-screen bg-gray-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -555,7 +618,10 @@ export default function App() {
         {currentView === "create" && (
           <CreateComplaint
             onSubmit={handleCreateComplaint}
-            onCancel={() => setCurrentView("dashboard")}
+            onCancel={() => {
+              setCurrentView("dashboard");
+              window.location.reload();
+            }}
           />
         )}
 
