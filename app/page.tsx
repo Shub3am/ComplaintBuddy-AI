@@ -136,7 +136,7 @@ export default function Main({}) {
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
             <Link
-              href={"/mvp"}
+              href={"/complaints"}
               className="inline-flex items-center px-8 py-4 bg-blue-600 text-white text-lg rounded-md hover:bg-blue-700 transition-colors">
               Start Solving Problems
               <ArrowRight className="ml-2 h-5 w-5" />
