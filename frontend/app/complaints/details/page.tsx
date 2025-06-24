@@ -19,6 +19,7 @@ import {
   Download,
   Share2,
   ExternalLink,
+  TestTube2,
 } from "lucide-react";
 import Link from "next/link";
 import { redirect, useSearchParams } from "next/navigation";
@@ -430,6 +431,23 @@ export default function ComplaintCardPage({ searchParams }) {
                 <div className="space-y-2">
                   <button
                     onClick={async () => {
+                      let retryComplain = await fetch(`/api/call`, {
+                        method: "POST",
+                        body: JSON.stringify({
+                          agent: complain.agent_id,
+                          complain: complain,
+                        }),
+                      }).then((res) => res.json());
+                      if (retryComplain) {
+                        alert("Call Sent Again!");
+                      }
+                    }}
+                    className="w-full flex items-center gap-2 px-3 py-2 text-left hover:bg-red-50 rounded-md text-blue-600">
+                    <TestTube2 className="h-4 w-4" />
+                    <span>Retry Call</span>
+                  </button>
+                  <button
+                    onClick={async () => {
                       let deleteComplain = await fetch(
                         `/api/complaints/${complain.id}`,
                         {
@@ -443,7 +461,7 @@ export default function ComplaintCardPage({ searchParams }) {
                     className="w-full flex items-center gap-2 px-3 py-2 text-left hover:bg-red-50 rounded-md text-red-600">
                     <Trash2 className="h-4 w-4" />
                     <span>Delete Complaint</span>
-                  </button>
+                  </button>{" "}
                 </div>
               </div>
             </div>
