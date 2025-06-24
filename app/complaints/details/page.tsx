@@ -111,7 +111,7 @@ const complaintData = {
   ],
 };
 
-export default function ComplaintCardPage({ searchParams }) {
+export default function ComplaintCardPage() {
   const [activeTab, setActiveTab] = useState("details");
   const [complain, setComplain] = useState([]);
   const searchParam = useSearchParams();
