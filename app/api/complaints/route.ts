@@ -39,7 +39,7 @@ export async function POST(request: NextRequest) {
             {
               title:
                 "Speak On Behalf of the customer and give the details about issue customer is facing to the company support representative",
-              body: ` Start the call by introducing yourself as a representative speaking on behalf of the customer which is ${complain.customerName}. Use a professional tone. Say that 'you are calling on behalf of ${complain.customerName} regarding their issue: ${complain.title} which in details is ${complain.description}. Could they assist me with this?' Wait for their acknowledgment before proceeding. `,
+              body: ` Start the call by introducing yourself as a representative speaking on behalf of the customer which is ${complain.customerName}. Use a professional tone. Say that 'you are calling on behalf of ${complain.customerName} regarding their issue: ${complain.title} wherein ${complain.description}. Could they assist me with this?' Wait for their acknowledgment before proceeding. `,
             },
             {
               title: `Provide Problem Details to ${complain.company} Customer Support Agent`,

@@ -66,6 +66,28 @@ export default function Main({}) {
       bgColor: "bg-indigo-100",
     },
   ];
+  const statistics = [
+    {
+      value: "70%",
+      label: "of customer service calls involve wait times over 10 minutes",
+      description: "Source: Industry Survey Data ( Reddit )",
+    },
+    {
+      value: "5+ hours",
+      label: "the average person spends on hold each year",
+      description: "Source: From Reddit and Social Media Feedbacks",
+    },
+    {
+      value: "90%",
+      label: "reduction in resolution time for complex complaints",
+      description: "Based on internal projections / initial pilot data",
+    },
+    {
+      value: "85%",
+      label: "improvement in user satisfaction with complaint resolution",
+      description: "Based on projected user feedback",
+    },
+  ];
 
   const howItWorks = [
     {
@@ -148,7 +170,24 @@ export default function Main({}) {
               See How It Works
             </Link>
           </div>
-
+          {/* NEW: Stats Section within Hero or as a new section below */}
+          <div className="mt-16 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+            {statistics.map((stat, index) => (
+              <div
+                key={index}
+                className="bg-white rounded-lg p-6 shadow-md border border-gray-200">
+                <p className="text-4xl font-bold text-blue-600 mb-2">
+                  {stat.value}
+                </p>
+                <p className="text-gray-700 font-medium">{stat.label}</p>
+                {stat.description && (
+                  <p className="text-sm text-gray-500 mt-1">
+                    {stat.description}
+                  </p>
+                )}
+              </div>
+            ))}
+          </div>
           {/* Stats */}
         </div>
       </section>
