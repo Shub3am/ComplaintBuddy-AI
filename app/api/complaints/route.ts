@@ -42,7 +42,7 @@ export async function POST(request: NextRequest) {
               body: ` Start the call by introducing yourself as a representative speaking on behalf of the customer which is ${complain.customerName}. Use a professional tone. Say that 'you are calling on behalf of ${complain.customerName} regarding their issue: ${complain.title} which in details is ${complain.description}. Could they assist me with this?' Wait for their acknowledgment before proceeding. `,
             },
             {
-              title: "Providing Customer and Issue Details",
+              title: `Providing Problem Details to ${complain.company} Customer Support Agent`,
               body: ` Once connected, provide the representative with all relevant details. Say, 'I would like to share some details about the customer and the issue they are facing. The customer's name is ${complain.customerName}, and their email is ${complain.customerEmail}. The issue is titled ${complain.title}, and it relates to ${complain.product}, ordered under the number ${complain.orderNumber}. The purchase amount was ${complain.purchaseAmount}.' Confirm the details with the representative. `,
             },
             {
@@ -64,7 +64,7 @@ export async function POST(request: NextRequest) {
           ],
           transcriber: {
             provider: "deepgram_stream",
-            silence_timeout_ms: 200,
+            silence_timeout_ms: 400,
             model: "nova-3",
             numerals: true,
             punctuate: true,
@@ -73,7 +73,7 @@ export async function POST(request: NextRequest) {
           },
           model: {
             model: "claude-3-7-sonnet-latest",
-            temperature: 0.55,
+            temperature: 0.7,
           },
           voice: {
             provider: "eleven_labs",
@@ -138,28 +138,37 @@ export async function POST(request: NextRequest) {
         }),
       }
     ).then((res) => res.json());
-    let addComplain = await db.from("complains").insert({
-      customer_name: complain.customerName,
-      company_name: complain.company,
-      company_phone: complain.companyPhone,
-      description: complain.description,
-      product: complain.product,
-      purchase_amount: complain.purchaseAmount,
-      order_number: complain.orderNumber,
-      issue_title: complain.title,
-      progress: "pending",
-      agent_id: createAgent.id,
-      customer_email: complain.customerEmail,
-      customer_phone: complain.customerPhone,
-    });
-    if (!addComplain.error) {
+    console.log(createAgent);
+    let addComplain = await db
+      .from("complains")
+      .insert({
+        customer_name: complain.customerName,
+        company_name: complain.company,
+        company_phone: complain.companyPhone,
+        description: complain.description,
+        product: complain.product,
+        purchase_amount: complain.purchaseAmount,
+        order_number: complain.orderNumber,
+        issue_title: complain.title,
+        progress: "pending",
+        agent_id: createAgent.id,
+        customer_email: complain.customerEmail,
+        customer_phone: complain.customerPhone,
+      })
+      .select("*");
+    console.log(addComplain);
+    if (addComplain.error == null) {
       let dispatchCallToCompany = await fetch(
         `${process.env.website}/api/call`,
         {
           method: "POST",
-          body: JSON.stringify({ agent: createAgent.id, complain }),
+          body: JSON.stringify({
+            agent: createAgent.id,
+            complain: addComplain.data[0],
+          }),
         }
       ).then((res) => res.json());
+
       return NextResponse.json(addComplain);
     } else {
       return NextResponse.json({ error: addComplain.error }, { status: 404 });

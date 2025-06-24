@@ -13,6 +13,7 @@ export async function POST(request: Request) {
         body: JSON.stringify({
           agent_id: body.agent,
           to_number: body.complain.company_phone,
+          call_context: body.complain,
         }),
       }
     );
