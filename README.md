@@ -7,7 +7,7 @@ ComplaintBuddy AI is an intelligent customer service automation platform that ca
 ## 🏆 Hackathon Project
 
 **Event**: Code Clash 2.0  
-**Team**: Team OnCall Engineer ( Team Leader: Shubham Vishwakarma )
+**Team**: Team OnCall Engineer
 **Team Leader**: Shubham Vishwakarma
 **Goal**: Revolutionize and Help customers get faster redressal and grievance resolution by automating complaint resolution through AI-powered phone calls
 
