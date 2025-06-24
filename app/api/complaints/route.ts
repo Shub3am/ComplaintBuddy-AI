@@ -34,7 +34,7 @@ export async function POST(request: NextRequest) {
         headers: { Authorization: `Bearer ${process.env.omnidim}` },
         body: JSON.stringify({
           name: `Customer Advocate for ${complain.customerName}`,
-          welcome_message: `Hi, Is this ${complain.company} Support? I am calling on behalf of a customer from ${complain.customerName}. I'm inquiring about an issue related to the product: ${complain.product} that they bought from your company. Could you assist me with this?`,
+          welcome_message: `Hi, Is this ${complain.company} Support? I am calling on behalf of a customer named ${complain.customerName}. I'm inquiring about an issue related to the product: ${complain.product} that they bought from your company. Could you assist me with this?`,
           context_breakdown: [
             {
               title:
