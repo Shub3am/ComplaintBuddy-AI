@@ -87,7 +87,7 @@ export async function POST(request: NextRequest) {
                 "summary",
                 "sentiment",
                 "extracted_variables",
-                "full_conversation",
+                "fullConversation",
               ],
             },
             extracted_variables: [
