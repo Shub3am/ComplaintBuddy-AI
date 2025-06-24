@@ -42,21 +42,18 @@ export async function POST(request: NextRequest) {
               body: ` Start the call by introducing yourself as a representative speaking on behalf of the customer which is ${complain.customerName}. Use a professional tone. Say that 'you are calling on behalf of ${complain.customerName} regarding their issue: ${complain.title} which in details is ${complain.description}. Could they assist me with this?' Wait for their acknowledgment before proceeding. `,
             },
             {
-              title: `Providing Problem Details to ${complain.company} Customer Support Agent`,
-              body: ` Once connected, provide the representative with all relevant details. Say, 'I would like to share some details about the customer and the issue they are facing. The customer's name is ${complain.customerName}, and their email is ${complain.customerEmail}. The issue is titled ${complain.title}, and it relates to ${complain.product}, ordered under the number ${complain.orderNumber}. The purchase amount was ${complain.purchaseAmount}.' Confirm the details with the representative. `,
+              title: `Provide Problem Details to ${complain.company} Customer Support Agent`,
+              body: `- provide the representative with all relevant details which are ${complain}. Start with saying 'I would like to share some details about the issue they are facing. The customer's name is ${complain.customerName}, and their email is ${complain.customerEmail}. The issue they are facing is ${complain.description} which is causing ${complain.title} , and it relates to ${complain.product}, ordered under the number ${complain.orderNumber}. The purchase amount was ${complain.purchaseAmount}.'`,
             },
             {
-              title: "Understanding Solutions Offered by Support Team",
+              title: `Ask for the Solution for the problem ${complain.description}`,
               body: ` Ask for their proposed solutions for the customer's problem. Say, 'Could you please explain the solutions you could offer for the problem related to ${complain.title}, ${complain.description}?' Listen carefully and take notes on their suggestions and check for clarity. `,
             },
             {
               title: "Inquiring About Alternative Solutions",
               body: ` After understanding the initial solutions, inquire if other alternatives are available. Ask, 'Are there any alternative solutions or options available for ${complain.customerName} regarding this issue?' Note their responses for differences in protocol or approach. `,
             },
-            {
-              title: "Handling Information Gaps",
-              body: ` If the representative cannot answer certain questions, ask for a resource. Say, 'If this information doesn't solve the issue, whom at [company_name] can ${complain.customerName} contact for further support?' Ensure you get the contact details or alternative methods of assistance. `,
-            },
+
             {
               title: "Concluding the Call",
               body: ` Wrap up the call with a friendly note. Say, 'Thank you for your assistance today. I'll make sure ${complain.customerName} is informed of the solutions and next steps. Have a great day!' Ensure all the information is clearly noted for communication back to the customer. `,
@@ -72,9 +69,10 @@ export async function POST(request: NextRequest) {
             diarize: false,
           },
           model: {
-            model: "claude-3-7-sonnet-latest",
+            model: "gpt-4o-mini",
             temperature: 0.7,
           },
+          call_type: "outgoing",
           voice: {
             provider: "eleven_labs",
             voice_id: "eA8FmgNe2rjMWPK5PQQZ",
