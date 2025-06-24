@@ -63,7 +63,7 @@ export async function POST(request: NextRequest) {
             provider: "deepgram_stream",
             silence_timeout_ms: 400,
             model: "nova-3",
-            numerals: true,
+            numerals: false,
             punctuate: true,
             smart_format: false,
             diarize: false,

@@ -9,8 +9,7 @@ export async function POST(request: Request) {
       {
         headers: { Authorization: `Bearer ${process.env.omnidim}` },
       }
-    );
-
+    ).then((res) => res.json());
     return NextResponse.json({ error: null, data: getLogs });
   } else {
     return NextResponse.json({ error: "Credentials Missing" });
