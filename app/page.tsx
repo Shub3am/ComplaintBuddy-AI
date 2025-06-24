@@ -142,7 +142,7 @@ export default function Main({}) {
               <ArrowRight className="ml-2 h-5 w-5" />
             </Link>
             <Link
-              href={"/mvp"}
+              href={"#mvp"}
               className="inline-flex items-center px-8 py-4 border border-gray-300 text-gray-700 text-lg rounded-md hover:bg-gray-50 transition-colors">
               <Phone className="mr-2 h-5 w-5" />
               See How It Works
@@ -185,7 +185,7 @@ export default function Main({}) {
       </section>
 
       {/* How It Works */}
-      <section className="py-20 bg-gray-50">
+      <section className="py-20 bg-gray-50" id="mvp">
         <div className="container mx-auto px-4">
           <div className="text-center mb-16">
             <h2 className="text-4xl font-bold mb-4">How It Works</h2>
