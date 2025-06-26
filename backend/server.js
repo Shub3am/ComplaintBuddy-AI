@@ -17,12 +17,11 @@ const setupRealtimeListener = () => {
                 schema: 'public',
                 table: 'complains',
             },
-            (payload) => {
+            async (payload) => {
                 console.log('Database change detected:', payload)
                 if (payload.old.call_logs.length !== payload.new.call_logs.length) {
-                    callCustomer(payload.new.agent_id)
+                    await fetch(`${process.env.website}/api/call/customer`, { method: "POST", body: JSON.stringify({ agent: payload.new.agent_id }) })
                     console.log("call to customer sent")
-
                 }
                 // Handle your database changes here
                 // You can add your custom logic to process the changes
