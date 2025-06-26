@@ -24,12 +24,12 @@ async function callCustomer(agentId) {
       method: "POST",
       headers: { Authorization: `Bearer ${process.env.omnidim}` },
       body: JSON.stringify({
-        name: `Customer Callback for ${complain.customer_Name}`,
-        welcome_message: `Hi, Is this ${complain.customer_name}?`,
+        name: `Customer Callback for ${complainDetails.customer_name}`,
+        welcome_message: `Hi, Is this ${complainDetails.customer_name}?`,
         context_breakdown: [
           {
             title: "Greet Customer and Confirm Availability",
-            body: `Start by greeting the customer warmly: 'Hello ${customer_name}, I hope you're doing well today. This is a follow-up call regarding your recent issue with ${complainDetails.product} from ${complainDetails.company_name}. I have some important updates to share with you about your case. Do you have about 5-10 minutes to discuss this?' Wait for their confirmation before proceeding.`,
+            body: `Start by greeting the customer warmly: 'Hello ${complainDetails.customer_name}, I hope you're doing well today. This is a follow-up call regarding your recent issue with ${complainDetails.product} from ${complainDetails.company_name}. I have some important updates to share with you about your case. Do you have about 5-10 minutes to discuss this?' Wait for their confirmation before proceeding.`,
           },
           {
             title: "Provide Issue Summary and Reference Information",
@@ -45,7 +45,7 @@ async function callCustomer(agentId) {
           },
           {
             title: "Share Solutions and Options Obtained",
-            body: `Present the solutions obtained from ${complainDetails.company_name}: 'I'm pleased to share that I spoke with a representative from ${complainDetails.company_name} support, and here are the solutions they've offered for your issue is ${response}. Explain each solution clearly and ask if they have any questions about the options. If there are no solutions, tell them`,
+            body: `Present the solutions obtained from ${complainDetails.company_name} which is ${response}: 'I'm pleased to share that I spoke with a representative from ${complainDetails.company_name} support, and tell them the solutions they've offered for your issue. Explain each solution clearly and ask if they have any questions about the options. If there are no solutions, tell them`,
           },
 
           {
@@ -70,7 +70,7 @@ async function callCustomer(agentId) {
           model: "gpt-4o-mini",
           temperature: 0.7,
         },
-        web_search: { enabled: true, provider: "OpenAI" },
+        web_search: { enabled: true, provider: "DuckDuckGo" },
         call_type: "outgoing",
         voice: {
           provider: "eleven_labs",
@@ -95,7 +95,8 @@ async function callCustomer(agentId) {
         to_number: complainDetails.customer_phone,
       }),
     }
-  );
+  ).then((res) => res.json());
+  console.log(dispatchCall, createAgent);
   console.log("agent created, calling customer");
   return true;
 }
@@ -106,6 +107,7 @@ export async function POST(req: NextRequest) {
       await callCustomer(body.agent);
       return NextResponse.json({ error: null, text: "Call Sent to Customer" });
     } catch (e) {
+      console.log(e);
       return NextResponse.json({ error: e });
     }
   }

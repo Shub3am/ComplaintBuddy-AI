@@ -25,7 +25,13 @@ export async function POST(request: Request) {
         .update({ call_logs: getLogs.call_log_data })
 
         .eq("agent_id", body.agent);
-      console.log("updated");
+
+      console.log("Ran Script");
+      await fetch(`${process.env.website}/api/call/customer`, {
+        method: "POST",
+        body: JSON.stringify({ agent: body.agent }),
+      });
+      console.log("call to customer sent");
     }
 
     return NextResponse.json({ error: null, data: getLogs });

@@ -557,6 +557,23 @@ function ComplaintCardPage() {
                     className="w-full flex items-center gap-2 px-3 py-2 text-left hover:bg-blue-50 rounded-md text-blue-600">
                     <TestTube2 className="h-4 w-4" />
                     <span>Retry Call</span>
+                  </button>{" "}
+                  <button
+                    onClick={async () => {
+                      let retryComplain = await fetch(`/api/call/customer`, {
+                        method: "POST",
+                        body: JSON.stringify({
+                          agent: complain.agent_id,
+                          complain: complain,
+                        }),
+                      }).then((res) => res.json());
+                      if (retryComplain) {
+                        alert("Call Sent Again!");
+                      }
+                    }}
+                    className="w-full flex items-center gap-2 px-3 py-2 text-left hover:bg-blue-50 rounded-md text-blue-600">
+                    <TestTube2 className="h-4 w-4" />
+                    <span>Simulate Customer Call</span>
                   </button>
                   <button
                     onClick={async () => {
